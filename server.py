@@ -36,5 +36,9 @@ def image():
         return make_response(jsonify({'message': "解析失败,请重新尝试"}), 400)
 
 
+@app.route("/gee/slider/offset", methods=["POST"])
+def gee_slider_offset():
+
+
 if __name__ == '__main__':
     app.run()

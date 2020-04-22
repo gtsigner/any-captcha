@@ -4,7 +4,7 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-ACCEPTED_FILE_FORMATS = ("gif", "png", "jpeg")
+ACCEPTED_FILE_FORMATS = ("gif", "png", "jpeg", "jpg")
 
 
 def download_image_as(url, file_format, file_name=None):
@@ -44,3 +44,7 @@ def download_image_as_jpeg(url, file_name=None):
 
 def download_image_as_png(url, file_name=None):
     return download_image_as(url, "PNG", file_name)
+
+
+def download_image_as_jpg(url, file_name=None):
+    return download_image_as(url, "JPG", file_name)
