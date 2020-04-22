@@ -1,6 +1,7 @@
 from PIL import Image
 import sys
 import os
+import numpy as np
 
 
 def slider_pos(bg_path, full_bg_path):
@@ -32,82 +33,39 @@ def img_word_pos():
     """
 
 
+gee_offsets = [[
+    157, 145, 265, 277, 181, 169, 241, 253, 109, 97,
+    289, 301, 85, 73, 25, 37, 13, 1, 121, 133,
+    61, 49, 217, 229, 205, 193
+], [
+    145, 157, 277, 265, 169, 181, 253, 241, 97, 109,
+    301, 289, 73, 85, 37, 25, 1, 13, 133, 121,
+    49, 61, 229, 217, 193, 205
+]]
+
+
 def _recover_img(filename, name):
     im = Image.open(filename)
     width, height = im.size
     new_img = Image.new('RGB', (260, height))
-    # split two area
-    pos_list = [
-        {'y': -58, 'x': -157},
-        {'y': -58, 'x': -145},
-        {'y': -58, 'x': -265},
-        {'y': -58, 'x': -277},
-        {'y': -58, 'x': -181},
-        {'y': -58, 'x': -169},
-        {'y': -58, 'x': -241},
-        {'y': -58, 'x': -253},
-        {'y': -58, 'x': -109},
-        {'y': -58, 'x': -97},
-        {'y': -58, 'x': -289},
-        {'y': -58, 'x': -301},
-        {'y': -58, 'x': -85},
-        {'y': -58, 'x': -73},
-        {'y': -58, 'x': -25},
-        {'y': -58, 'x': -37},
-        {'y': -58, 'x': -13},
-        {'y': -58, 'x': -1},
-        {'y': -58, 'x': -121},
-        {'y': -58, 'x': -133},
-        {'y': -58, 'x': -61},
-        {'y': -58, 'x': -49},
-        {'y': -58, 'x': -217},
-        {'y': -58, 'x': -229},
-        {'y': -58, 'x': -205},
-        {'y': -58, 'x': -193},
-        {'y': 0, 'x': -145},
-        {'y': 0, 'x': -157},
-        {'y': 0, 'x': -277},
-        {'y': 0, 'x': -265},
-        {'y': 0, 'x': -169},
-        {'y': 0, 'x': -181},
-        {'y': 0, 'x': -253},
-        {'y': 0, 'x': -241},
-        {'y': 0, 'x': -97},
-        {'y': 0, 'x': -109},
-        {'y': 0, 'x': -301},
-        {'y': 0, 'x': -289},
-        {'y': 0, 'x': -73},
-        {'y': 0, 'x': -85},
-        {'y': 0, 'x': -37},
-        {'y': 0, 'x': -25},
-        {'y': 0, 'x': -1},
-        {'y': 0, 'x': -13},
-        {'y': 0, 'x': -133},
-        {'y': 0, 'x': -121},
-        {'y': 0, 'x': -49},
-        {'y': 0, 'x': -61},
-        {'y': 0, 'x': -229},
-        {'y': 0, 'x': -217},
-        {'y': 0, 'x': -193},
-        {'y': 0, 'x': -205}
-    ]
     im_list_up = []
     im_list_down = []
-    for loc in pos_list:
-        if loc['y'] == -58:
-            im_list_up.append(im.crop((abs(loc['x']), height // 2, abs(loc['x']) + 10, height)))
-        if loc['y'] == 0:
-            im_list_down.append(im.crop((abs(loc['x']), 0, abs(loc['x']) + 10, height // 2)))
+    for y, loc in enumerate(gee_offsets):
+        for y1, x in enumerate(loc):
+            if y == 0:
+                im_list_up.append(im.crop((x, height // 2, x + 10, height)))
+            if y == 1:
+                im_list_down.append(im.crop((x, 0, x + 10, height // 2)))
 
-    x_offset = 0
+    off = 0
     for img in im_list_up:
-        new_img.paste(img, (x_offset, 0))
-        x_offset += img.size[0]
+        new_img.paste(img, (off, 0))
+        off += img.size[0]
 
-    x_offset = 0
+    off = 0
     for img in im_list_down:
-        new_img.paste(img, (x_offset, height // 2))
-        x_offset += img.size[0]
+        new_img.paste(img, (off, height // 2))
+        off += img.size[0]
     new_img.save(name)
     return new_img
 

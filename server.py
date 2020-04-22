@@ -71,7 +71,7 @@ def gee_slider_offset():
         os.remove(bg_path)
         os.remove(full_bg_path)
     t = time.perf_counter() - t
-    return make_response({'message': "解析成功", 'data': res, "t": round(t, 2)}, 200)
+    return make_response({'message': "解析成功", 'offset': res, "t": round(t, 2)}, 200)
 
 
 if __name__ == '__main__':
